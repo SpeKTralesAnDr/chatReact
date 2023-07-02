@@ -7,7 +7,7 @@ import Main from './main/Main.jsx'
 
 const AppRoutes = () => {
     return (
-        <div>
+        
             <Routes>
                 <Route path='/' element = {<Main/>}/>
                 <Route path='/chat' element = {<Chat/>}/>
@@ -15,7 +15,7 @@ const AppRoutes = () => {
 
                 
             </Routes>
-        </div>
+       
     )
 }
 
