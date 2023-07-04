@@ -1,39 +1,51 @@
 import React, { useState } from 'react';
-import io from 'socket.io-client'
-import InputsForm from '../components/form/form.jsx';
-import styles from './main.module.css'
+import io from 'socket.io-client';
+import InputsForm from '../components/form/formJoin.jsx';
+import styles from './main.module.css';
+import FormCreate from '../components/form/FormCreate.jsx';
+
+
 const Main = () => {
-    
-    const socket = io.connect('http://localhost:5005')
-    socket.on("test", ({ data }) => {console.log(data)})
-    var value = '' 
-    const parent = (event) =>{
-        console.log(event,'eee')
-        value = event
-       
-    }
-    const test = ()=> {
-        console.log(value)
-    }
-   
-  
+  const [currentModal, setCurrentModal] = useState(1);
+  const socket = io.connect('http://localhost:5005');
 
-    return (
+  socket.on("test", ({ data }) => {
+    console.log(data);
+  });
+
+  let value = '';
+
+  const parent = (event) => {
+    console.log(event, 'eee');
+    value = event;
+    socket.emit('connectToTheRoom', event);
+  };
+
+  const test = (event) => {
+    console.log(value);
+    setCurrentModal(event);
+    console.log(event)
+  };
+
+  return (
+    <div className={styles.main}>
+      <div className={styles.forms}>
+        {currentModal === 1 ? (
+            
+          <InputsForm child={parent} Changemodal = {test} />
+          
+        ) : (
+
+          
+          <FormCreate></FormCreate>
+        )}
+
         
-        <div className={styles.main}>
-            <InputsForm  child={parent}>  
-            </InputsForm>
-            
-            <button
-                onClick={test}
-                
 
-            >
-                
-            </button>
-            
-        </div>
-    );
+        
+      </div>
+    </div>
+  );
 };
 
 export default Main;

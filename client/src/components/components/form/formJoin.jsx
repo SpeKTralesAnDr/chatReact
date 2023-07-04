@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import styles from './styles.module.css'
+import styles from './form.module.css'
 
-const InputsForm = ({child}) => {
+
+const InputsForm = ({child, Changemodal}) => {
     const [valueRoom, SetValueRoom] = useState('')
     const [valuePassword, SetValuePassword] = useState('')
     const [valueName, SetValueName] = useState('')
-
+   
     const dynamicValueName = (event) => {
         const newValue = event.target.value; // странно, без const не робит
         console.log(newValue);
@@ -26,6 +27,9 @@ const InputsForm = ({child}) => {
       };
     const send =()=>{
         child({room:valueRoom, password:valuePassword, name:valueName})
+    }
+    const  Change = ()=>{
+        Changemodal(2)
     }
     
     return (
@@ -52,12 +56,15 @@ const InputsForm = ({child}) => {
                 className={styles.input}
                 placeholder='Password'
                 value={valuePassword}
+                type='password'
                 onChange={dynamicValuePassword}
 
             >
+                
             </input>
                 <button
                 className={styles.link}
+                onClick={Change}
                 >Create room
                 </button>
             <button
