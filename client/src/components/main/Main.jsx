@@ -3,11 +3,12 @@ import io from 'socket.io-client';
 import InputsForm from '../components/form/formJoin.jsx';
 import styles from './main.module.css';
 import FormCreate from '../components/form/FormCreate.jsx';
-
+import SettingsModule from '../components/settings/setting.jsx'
+ 
 
 const Main = () => {
   const [currentModal, setCurrentModal] = useState(1);
-  const socket = io.connect('http://localhost:5005');
+  const socket = io.connect('http://26.83.203.240:5005');
 
   socket.on("test", ({ data }) => {
     console.log(data);
@@ -21,10 +22,11 @@ const Main = () => {
     socket.emit('connectToTheRoom', event);
   };
 
-  const test = (event) => {
+  const changemodalwindow = (event) => {
     console.log(value);
     setCurrentModal(event);
     console.log(event)
+   
   };
 
   return (
@@ -32,12 +34,16 @@ const Main = () => {
       <div className={styles.forms}>
         {currentModal === 1 ? (
             
-          <InputsForm child={parent} Changemodal = {test} />
+          <InputsForm child={parent} Changemodal = {changemodalwindow} />
           
         ) : (
 
           
-          <FormCreate></FormCreate>
+          <div className={styles.modals} >
+            <FormCreate Changemodal = {changemodalwindow} ></FormCreate>
+            <SettingsModule ></SettingsModule>
+            
+          </div>
         )}
 
         

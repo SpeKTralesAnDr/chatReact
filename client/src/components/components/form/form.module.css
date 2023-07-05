@@ -3,22 +3,36 @@
     margin: 0px;
     transition: 300ms;
     font-family: Arial;
-    color:aliceblue
+    color:aliceblue;
+    --additionalColor: #cc3444
+
 }
-.box{
-    padding: 20px 15px;
-    
+.boxJoin{
+    padding: 0px 15px 20px 15px;
+    height: 350px;
     width: 273px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     border-radius: 15px;
+    border: 1px solid gray;
+}
+.box{
+    padding: 0px 15px 20px 15px;
+    height: 350px;
+    width: 273px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px 0px 0px 15px;
+    border: 1px solid gray;
 
 }
 .text{
     margin: 3px;
-    font-size: 15pt;
+    font-size: 18pt;
 }
 .link{
     margin: 10px;
@@ -46,14 +60,43 @@
 .warn{
     color:rgba(255, 109, 109, 0.644); ;
 }  
-
+.inputpassword{
+    border: none;
+    border-radius: 15px;
+    padding: 15px 38px 15px 15px;
+    font-size: 15pt;
+    width: 220px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(61, 61, 61);;
+    
+}
+.inputpassword:focus{
+    color:white;
+    outline: 1px solid var(--additionalColor); ;
+}
 .input:focus{
     
     color:white;
     outline: 1px solid rgba(255, 109, 109, 0.644); ;
 }
+.VisibilityOffOutlinedIcon{
+    position: absolute;
+    right:  10px;
+    transform: translateY(-75%);
+    cursor: pointer;
+}
+.blockPassword{
+    position: relative;
+    margin-top: 15px;
+}
+.ButtonPasswordVisibility{
+    background-color: rgba(102, 51, 153, 0);
+    border: none;
+    
+}
+
 .button{
-    background-color: rgb(66, 66, 66);
+    background-color: var(--additionalColor);
     width: 100%;
     padding: 10px 0;
     border-radius: 15px;
@@ -63,5 +106,5 @@
     
 }
 .button:hover{
-    background: rgba(255, 109, 109, 0.644);
+    background: #8f252f;
 }

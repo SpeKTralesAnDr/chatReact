@@ -22,8 +22,9 @@ socket.emit('testroom', {
     data: 'testmessage'
   });
 //   socket.broadcast.to(user.room).emit('sendofferFS',{
-      
-//     data: stream,
+  socket.on('connectToTheRoom', (event)=>{
+    console.log(event)
+  })
 // })
 
 

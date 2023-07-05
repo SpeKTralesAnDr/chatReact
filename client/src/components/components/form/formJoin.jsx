@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './form.module.css'
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 
 const InputsForm = ({child, Changemodal}) => {
     const [valueRoom, SetValueRoom] = useState('')
@@ -31,9 +33,21 @@ const InputsForm = ({child, Changemodal}) => {
     const  Change = ()=>{
         Changemodal(2)
     }
+    const [Visibility, SetVisibility]= useState(true)
+    const ChangeVisiblity = () =>{
+        if(Visibility === false){
+            SetVisibility('text')
+            console.log(true)
+        }
+        else{
+            
+            SetVisibility(false)
+            
+        }
+    }
     
     return (
-        <div className={styles.box}>
+        <div className={styles.boxJoin}>
             <div className={styles.text}>Connect to the room</div>
             <div className={styles.warn}></div>
             <input
@@ -41,27 +55,37 @@ const InputsForm = ({child, Changemodal}) => {
                 placeholder='Your Name'
                 onChange={dynamicValueName}
                 value={valueName}
+              
                 
             >
             </input>
+            
             <input
                 className={styles.input}
                 placeholder='Room'
                 onChange={dynamicValueRoom}
                 value={valueRoom}
                 
+                
             >
             </input>
+            <div className={styles.blockPassword}>
             <input
-                className={styles.input}
+                className={styles.inputpassword}
                 placeholder='Password'
                 value={valuePassword}
-                type='password'
+                type={Visibility ? 'text' : 'password'}
                 onChange={dynamicValuePassword}
+                
 
             >
                 
             </input>
+            <button className={styles.ButtonPasswordVisibility} onClick={ChangeVisiblity}>
+                {Visibility == false ? (<VisibilityOffOutlinedIcon className={styles.VisibilityOffOutlinedIcon}></VisibilityOffOutlinedIcon>): (<RemoveRedEyeOutlinedIcon className={styles.VisibilityOffOutlinedIcon}></RemoveRedEyeOutlinedIcon>
+                    )}
+            </button>
+            </div>
                 <button
                 className={styles.link}
                 onClick={Change}
