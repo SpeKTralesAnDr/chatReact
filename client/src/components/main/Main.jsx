@@ -8,18 +8,25 @@ import SettingsModule from '../components/settings/setting.jsx'
 
 const Main = () => {
   const [currentModal, setCurrentModal] = useState(1);
-  const socket = io.connect('http://26.83.203.240:5005');
 
-  socket.on("test", ({ data }) => {
-    console.log(data);
-  });
+    
 
+  
+
+  // socket.on("test", ({ data }) => {
+  //   console.log(data);
+  // });
+  const [SettingsOfTheRoom, setSettingsOfTheRoom] = useState('')
+  const SettingsOfTheRoomFunction= (event)=>{
+    console.log(event)
+    setSettingsOfTheRoom(event)
+  } 
   let value = '';
 
   const parent = (event) => {
     console.log(event, 'eee');
     value = event;
-    socket.emit('connectToTheRoom', event);
+    // socket.emit('connectToTheRoom', event);
   };
 
   const changemodalwindow = (event) => {
@@ -40,8 +47,8 @@ const Main = () => {
 
           
           <div className={styles.modals} >
-            <FormCreate Changemodal = {changemodalwindow} ></FormCreate>
-            <SettingsModule ></SettingsModule>
+            <FormCreate Changemodal = {changemodalwindow} settings = {SettingsOfTheRoom}></FormCreate>
+            <SettingsModule SettingsBoxes={SettingsOfTheRoomFunction} ></SettingsModule>
             
           </div>
         )}

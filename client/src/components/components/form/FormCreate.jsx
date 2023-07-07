@@ -4,7 +4,7 @@ import styles from './form.module.css'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-const FormCreate = ({Changemodal}) => {
+const FormCreate = ({Changemodal,settings}) => {
     const [Visibility, SetVisibility]= useState(true)
     const ChangeVisiblity = () => {
         if (Visibility === false) {
@@ -14,9 +14,32 @@ const FormCreate = ({Changemodal}) => {
             SetVisibility(false);
         }
     };
+
+    const [isenadblepassword, SetIsanablepassword] = useState(true)
     // const Changemodal = ()=>{
-        
-    // }
+    useEffect(()=> {
+        // console.log('АААААААААА',event)
+        console.log(settings, 'from create')
+        if (settings === null || settings === undefined || settings === ''){//НУЖНО СПРОСИТЬ ПОЧЕМУ ПРИ РЕНДЕРЕ ЭЛЕМЕНТЫ ТРИГЕРИТСЯ USEEFFECT в MAIN и в настрой
+
+        }else{
+            settings.map((box)=>{
+                if(box.label === 'Password'){
+                    if(box.state == false){
+                        console.log('пароль выключен')
+                        SetIsanablepassword(false)
+                    }else{
+                        console.log('пароль включен')
+                        SetIsanablepassword(true)
+                        
+                    }
+                }
+            })
+            console.log(settings, 'ФОРМА СОЗДАНИЯ')
+        }
+        //НАПИСАТЬ СОРТИРОВКУ, ПОФИКСИТЬ БАНГ С  RANGE
+    },[settings])
+    
     const [valuePassword, SetValuePassword] = useState('') 
     const [valueRoom, SetValueRoom] = useState('')
     const [valueName, SetValueName] = useState('')
@@ -65,7 +88,8 @@ const FormCreate = ({Changemodal}) => {
            
            
             <div className={styles.blockPassword}>
-            <input
+            {isenadblepassword == true ? (<div>
+                <input
                 className={styles.inputpassword}
                 placeholder='Password'
                 value={valuePassword}
@@ -78,9 +102,11 @@ const FormCreate = ({Changemodal}) => {
             </input>
             <button className={styles.ButtonPasswordVisibility} onClick={ChangeVisiblity}>
                 {Visibility == false ? (<VisibilityOffOutlinedIcon className={styles.VisibilityOffOutlinedIcon}></VisibilityOffOutlinedIcon>):
-                 (<RemoveRedEyeOutlinedIcon className={styles.VisibilityOffOutlinedIcon}></RemoveRedEyeOutlinedIcon >)}
+                 (<RemoveRedEyeOutlinedIcon className={styles.VisibilityOffOutlinedIcon}  ></RemoveRedEyeOutlinedIcon>)}
                  
             </button>
+            </div>) : (<div></div>)}
+            
             </div>
                 <button
                 onClick={JoinToRoom}
