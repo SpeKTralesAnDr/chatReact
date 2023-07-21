@@ -4,11 +4,11 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 
-const InputsForm = ({child, Changemodal}) => {
+const InputsForm = ({inputs, Changemodal, getwarn,}) => {
     const [valueRoom, SetValueRoom] = useState('')
     const [valuePassword, SetValuePassword] = useState('')
     const [valueName, SetValueName] = useState('')
-   
+    
     const dynamicValueName = (event) => {
         const newValue = event.target.value; // странно, без const не робит
         console.log(newValue);
@@ -28,7 +28,7 @@ const InputsForm = ({child, Changemodal}) => {
          
       };
     const send =()=>{
-        child({room:valueRoom, password:valuePassword, name:valueName})
+        inputs({room:valueRoom, password:valuePassword, name:valueName})
     }
     const  Change = ()=>{
         Changemodal(2)
@@ -49,7 +49,7 @@ const InputsForm = ({child, Changemodal}) => {
     return (
         <div className={styles.boxJoin}>
             <div className={styles.text}>Connect to the room</div>
-            <div className={styles.warn}></div>
+            <div className={styles.warn}>{getwarn}</div>
             <input
                 className={styles.input}
                 placeholder='Your Name'

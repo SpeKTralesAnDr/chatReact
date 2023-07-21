@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styles from './settings.module.css'
-const SettingsModule = ({SettingsBoxes}) => {
-  const [settingsBoxes, setSettingsBoxes] = useState([
-    { id: 1, label: 'System messages',description:"By keeping this parameter enabled, you will receive important system messages regarding updates, notifications, and relevant information", type: 'checkbox', state: false },
-    { id: 2, label: 'Limit of Users:',description:"Determine the maximum number of users who can connect to your room.", type: 'range', state: 10, min:2, max:120,},
-    { id: 3, label: 'Password',description:"The option to add security to your room with a password", type: 'checkbox', state: true},
-    { id: 4, label: 'Checkbox 3',description:"Текст (от лат. textus «ткань; сплетение, связь, сочетание») — зафиксированная на каком-либо материальном носителе человеческая мысль; в общем плане связная и полная последовательность символов", type: 'checkbox', state: false },
-  ]);
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+const SettingsModule = ({SettingsOfTheRoomFunction, settingsBoxes, setSettingsForMain}) => {
 
-// useEffect((console.log(settingsBoxes)),[settingsBoxes])
-useEffect(() => {
-  console.log(settingsBoxes);
-}, [settingsBoxes]);
+const handleChangeAdditionalBlock = (event)=>{
+  console.log(event)
+}
 //----------------------------------------------------------------------------------------------------
   const  handleCheckboxChange = (event,value)=> {   
         console.log(value,'dddddddddddasdasdada')                                                                     //|
@@ -29,10 +23,10 @@ useEffect(() => {
         console.log(box)                                                                          //|
       return box;                                                                                 //|
     });                                                                                           //|
-    SettingsBoxes(updatedSettingsBoxes)    
+
     console.log(updatedSettingsBoxes)                                                                                        //|
     console.log('сработало обновление')                                                                                        //|
-      setSettingsBoxes(updatedSettingsBoxes)
+    setSettingsForMain(updatedSettingsBoxes)
 
 
 
@@ -42,8 +36,15 @@ useEffect(() => {
   return (
     <div className={styles.SettingBLock}>
       <div className={styles.textaboutsettings}>Settings</div>
+
+
+
       {settingsBoxes.map((event) => (
-        <div key={event.id} className={styles.blockInputs}>
+        event.type === 'range' || event.type === 'input' || event.type === 'checkbox' ? (
+
+        <div key={event.id}>
+         
+        <div className={styles.blockInputs}>
           <div className={styles.labelInput}>
           <label className= {styles.label}>
           <div className={styles.labeltext}>{event.label}</div>
@@ -67,6 +68,21 @@ useEffect(() => {
                   
                 </input>
               {event.type === 'range' ? ( <div className={styles.count}>{event.max}</div>): (<div></div>)}
+              {event.additionalBlocks !== undefined ? (
+              <div>
+                {event.additionalBlocks.map((block) =>
+                  block.element === 'button' ? (
+                    <button className={styles.buttonAdditional} onClick={(blockEvent)=>{handleChangeAdditionalBlock(blockEvent)}}>
+                      <ContentCopyIcon></ContentCopyIcon>
+                    </button>
+                  ) : (
+                    <div>не</div>
+                  )
+                )}
+              </div>
+            ) : (
+              <div>не хуй</div>
+              )}
                 
           </div>
           </div>
@@ -76,7 +92,22 @@ useEffect(() => {
               
          
         </div>
+ 
+        
+              
+         
+     
+        </div>
+        )
+         :
+        (<div>
+          
+        </div>)
       ))}
+
+
+
+      
       
       
     </div>

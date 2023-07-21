@@ -111,7 +111,9 @@ justify-content: end;
 .blockInputs input[type="checkbox"]:focus {
   
 }
-
+.blockInputs input[type="input"]{
+  background-color: #cc3444;
+}
 
 .blockInputs input[type="range"]{
   -webkit-appearance: none;
@@ -131,4 +133,15 @@ justify-content: end;
     height:30px;
     width:10px;
     border-radius: 30px;
+}
+.buttonAdditional{
+  background-color: #cc3444;
+ 
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 15px;
+    border: 0px;
+    cursor: pointer;
+    font-size: 13pt;
+    
 }
