@@ -1,0 +1,51 @@
+.switchers button{
+    margin: auto;
+    font-size: 14pt;
+    cursor: pointer;
+
+}
+.switchers{
+    height: 45px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    background-color: rgb(53, 53, 53);
+    
+}
+
+.buttonSwitchOn div{
+    color:var(--additionalColor);
+   
+    border-bottom: 3px solid var(--additionalColor);
+    margin:10px 10px 0px 10px;
+    padding-bottom:7px;
+    
+
+  
+}
+.buttonSwitchOff div{
+    margin:10px 10px 0px 10px;
+    padding-bottom: 10px;
+    
+}
+.buttonSwitchOn{
+    background-color:transparent;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.buttonSwitchOff{
+    background-color:transparent;
+    border-radius: 10px 10px 0px 0px;
+    
+}
+.buttonSwitchOff:hover{
+    background-color: #74747450;
+}
+.buttonSwitchOn:hover{
+    
+    background-color: #7c3d4350;
+    
+}
+.switchers button{
+   border:none
+}

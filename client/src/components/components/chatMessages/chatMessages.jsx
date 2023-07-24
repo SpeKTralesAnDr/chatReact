@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './chatMessages.module.css';
+import SendIcon from '@mui/icons-material/Send';
 
-const ChatMessages = ({ messages,SendMessage, name }) => {
+const ChatMessages = ({ messages,SendMessage, name,  }) => {
   const [valueOfInput, setValueOfInput] = useState('')
  
   const checkkey = (event)=>{
@@ -12,6 +13,13 @@ const ChatMessages = ({ messages,SendMessage, name }) => {
 
     }
   }
+  const send = (event)=>{
+    
+     
+      SendMessage(valueOfInput)
+      setValueOfInput('')
+
+    }
   return (
     <div className={styles.ChatMessages}>
       {messages.map((event) => (
@@ -40,7 +48,10 @@ const ChatMessages = ({ messages,SendMessage, name }) => {
           </div>
         </div>
       ))}
-      <input className={styles.inputMessage}  value={valueOfInput}onChange={(e)=>{setValueOfInput(e.target.value)}} onKeyDown={(event) => {checkkey(event)}}></input>
+      <button className={styles.button} onClick={send}>
+        <SendIcon ></SendIcon>
+      </button>
+      <input placeholder={`Message to chat`}className={styles.inputMessage}  value={valueOfInput}onChange={(e)=>{setValueOfInput(e.target.value)}} onKeyDown={(event) => {checkkey(event)}}></input>
     </div>
   );
 };

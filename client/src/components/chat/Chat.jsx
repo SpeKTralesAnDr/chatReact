@@ -3,6 +3,9 @@ import { useLocation, useNavigate} from 'react-router-dom';
 import SettingsModule from '../components/settings/setting';
 import ChatMessages from '../components/chatMessages/chatMessages';
 import styles from './chat.module.css'
+import Panelchangewindow from '../panelchangewindow/panelchangewindow';
+
+
 
 const Chat = ({socket}) => {
   const navigate = useNavigate();
@@ -22,11 +25,10 @@ const Chat = ({socket}) => {
         "Keep rules of the community","Have fun."
       ]}])
 
+    
 
-
-
-
-    const SendMessage=(event)=>{
+    
+      const SendMessage=(event)=>{
       console.log(event)
       
       socket.emit('sendmessagefromclient', event)
@@ -37,7 +39,41 @@ const Chat = ({socket}) => {
     }
 // -------------------------------------------------------------------------------------------------------------
 
+const [switchers, setSwitchers] = useState([
+    {id:'Chat', value:'Chat', State:true, },
+    {id:'Members', value:'Members', State:false, },
+    {id:'Settings', value:'Settings', State:false, }
+])
+const [rightpanelwindow, setRightpanelwindow ] = useState('Chat')
+useEffect(()=>{
+    console.log(switchers)
+},[switchers])
+
 const handleMessageFromClient = (e) => {
+    if(e.name != data.user){
+        if ("Notification" in window) {
+            Notification.requestPermission().then((permission) => {
+                if (permission === "granted" && document.visibilityState =='hidden') {
+                    
+                new Notification(e.name, {
+                    body: e.content,
+                    icon: "https://wp-s.ru/wallpapers/3/16/517133797886000/polosatyj-kot-ledit-na-svoej-lapke.jpg",
+                    // silent: true,
+                    lang: "en",
+                    vibrate: [200, 100, 200],
+                    timestamp: Date.now(),
+                    renotify: true,
+                    tag: "notification-tag",
+                    badge: "https://wp-s.ru/wallpapers/3/16/517133797886000/polosatyj-kot-ledit-na-svoej-lapke.jpg",
+                    image: "https://wp-s.ru/wallpapers/3/16/517133797886000/polosatyj-kot-ledit-na-svoej-lapke.jpg",
+                    data: {
+                      customData: "Additional data for the notification",
+                    }
+                });
+              }
+            });
+          }
+    }
   // Проверяем, совпадает ли имя сообщения с именем последнего сообщения в массиве
   if (e.name === messages[messages.length - 1]?.name) {
     console.log('names are the same', e.name, '==', messages[messages.length - 1]?.name);
@@ -131,18 +167,30 @@ useEffect(() => {
   socket.emit('NewPageConnect', localStorage.getItem('token'));
   console.log('ввв');
 }, []);
-    
+
 
 
 
 
 
     return (
-        <div className={styles.wwwwChat}> 
-    
+        <div className={styles.background}>
+            <div className={styles.header}>dsdd</div>
+             <div className={styles.wChat}> 
+            <div className={styles.video}>
+                <div>
+
+                </div>
+                <div className={styles.SettingsOfCall}></div>
+            </div>
+           {/* { data.role == 'host' ? (<SettingsModule className={styles.settings}settingsBoxes={data.settings} setSettingsForMain={newSettings => setData({ ...data, settings: newSettings })}  > </SettingsModule>):<div></div> } */}
+          <div className={styles.rightPanel}>
+           <Panelchangewindow data = {data.role} Chagewindow={setRightpanelwindow} set></Panelchangewindow>
           <div  className= {styles.Chat}><ChatMessages messages = {messages}  SendMessage= {SendMessage}  name = {data.user}></ChatMessages></div>
+          </div>
           {/* СНИЗУ КОД НУЖНО РАЗОБРАТЬ  */}
-           { data.role == 'host' ? (<SettingsModule className={styles.settings}settingsBoxes={data.settings} setSettingsForMain={newSettings => setData({ ...data, settings: newSettings })}  > </SettingsModule>):<div></div> }
+          {/* <button onClick={showNotification}>Показать уведомление</button> */}
+        </div>
         </div>
     );
 };

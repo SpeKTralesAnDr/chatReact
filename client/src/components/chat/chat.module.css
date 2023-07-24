@@ -1,5 +1,38 @@
+*{
+    --additionalColor: #cc3444;
+}
 .Chat{
     overflow-y: auto;
-    /* display: none; */
-    height: 300px;
+    min-width: 265px;
+    height: 100%
+}   
+.wChat{
+   
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        height: 100%;
+
 }
+.settings{
+    
+}
+.background{
+    height: 100%;
+}
+.header{
+    background-color: rgb(53, 53, 53);
+    width: 100%;
+}
+
+.video{
+    background-color: rgb(71, 71, 71);
+   
+}
+
+
+
+@media (max-width: 700px) {
+    .wChat {
+      grid-template-columns: 1fr; /* Устанавливаем одну колонку */
+    }
+  }

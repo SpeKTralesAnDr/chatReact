@@ -15,9 +15,9 @@
 }
 
 .ChatMessages{
- 
+    position: relative;
     padding: 20px;
-   
+    height: calc(100% - 40px);
     background-color:rgb(66, 66, 66) ;
 }
 .HeaderOfMessage{
@@ -30,6 +30,7 @@
     display: flex;
     flex-direction: column;
     margin-left: 5px;
+
 }
 .avatar{
     background-color: #aaaaaa;
@@ -38,16 +39,29 @@
     border-radius: 50%;
     overflow: hidden;
     
+
 }
-.inputMessage{
-    /* margin-top: 15px; */
-    background-color: rgb(39, 39, 39);
-   padding: 10px 0px 10px 10px;
-    width: 100%;
+.button{
+    position: absolute;
+    bottom:  25px;
+    right: 25px;
+    z-index: 2;
     border: none;
     outline: none;
-    position: sticky;
-    bottom: 0px;
+    cursor: pointer;
+    background-color: rgba(11, 128, 231, 0);
+    
+}
+
+.inputMessage{
+    margin-bottom: 20px;
+    background-color: rgb(39, 39, 39);
+    bottom:  1px;
+   padding: 10px 0px 10px 10px;
+    width: calc(100% - 40px);
+    border: none;
+    outline: none;
+    position: absolute;
     font-size: 13pt;
     border-radius: 15px;
 
@@ -92,6 +106,7 @@
     background-color: rgba(43, 43, 43, 0);
     padding:2px  5px;
     border-radius: 15px;
+    
     display: flex;
     font-size: 10pt;
     flex-direction: column;
