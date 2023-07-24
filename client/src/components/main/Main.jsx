@@ -68,7 +68,7 @@ const Main = ({socket}) => {
  
   const [settingsToModule, setSettingsBoxes] = useState([
     { id: 'System messages', label: 'System messages',description:"By keeping this parameter enabled, you will receive important system messages regarding updates, notifications, and relevant information", type: 'checkbox', state: false },
-    { id: 'LimitOfUsers', label: 'Limit of Users:',description:"Determine the maximum number of users who can connect to your room.", type: 'range', state: 10, min:2, max:120,},
+    { id: 'LimitOfUsers', label: 'Limit of Users',description:"Determine the maximum number of users who can connect to your room.", type: 'range', state: 10, min:2, max:120,},
     { id: 'Password', label: 'Password',description:"The option to add security to your room with a password", type: 'checkbox', state: true},
   
    

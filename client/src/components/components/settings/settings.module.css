@@ -2,6 +2,8 @@
     --additionalColor: #cc3444;
     --form-background: none;
     transition: 300ms;
+    margin: 0px;
+    padding: 0px;
 }
 
 
@@ -50,10 +52,27 @@
   margin:0 5px ;
   
 }
-
+.ButtonURLClicked{
+ background-color: rgb(66, 116, 66);
+ padding: 5px 4px;
+ cursor: pointer;
+ border-radius:5px 0px 5px 0px ;
+}
+.ButtonURLnotclicked{
+  background: var(--additionalColor);
+  padding: 5px 4px;
+  cursor: pointer;
+  border-radius:5px 0px 5px 0px ;
+}
+.ButtonURLClicked:hover{
+  background-color: rgba(66, 116, 66, 0.466);
+}
+.ButtonURLnotclicked:hover{
+  background-color: #cc344386;;
+}
 .currentinput{
 width: 30%;
-
+align-items: center;
 display: flex;
 justify-content: end;
 }
@@ -117,7 +136,7 @@ justify-content: end;
 
 .blockInputs input[type="range"]{
   -webkit-appearance: none;
-  transform: translateY(50%);
+  /* transform: translateY(50%); */
   width: 100px;
   height: 10px;
   background: rgba(255, 255, 255, 0.6);

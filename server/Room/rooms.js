@@ -8,7 +8,7 @@ const CreateRoom = (general, extra)=>{
     var isrepeat = 0
     for(var i = 0; i < room.length ; i++){
         
-        console.log(room[i].room, '', general.room)
+        // console.log(room[i].room, '', general.room)
        if(room[i].room == general.room ){
            isrepeat = 1
            console.log( 'команты повтораяются ',isrepeat)
@@ -20,18 +20,22 @@ const CreateRoom = (general, extra)=>{
         const InviteToken = codeParam({room:general.room ,password:general.password })
         extra.push({
           id: 'InviteURL',
-          label: 'Life span of Invite URL:',
+          label: 'Life span of Invite URL',
           description: "Текст (от лат. textus «ткань; сплетение, связь, сочетание») — зафиксированная на каком-либо материальном носителе человеческая мысль; в общем плане связная и полная последовательность символов",
           type: 'range',
           state: 5,
             min:5,
             max:60,
-            URL: `http://localhost:3000/Link?${InviteToken}`,
+            URL: `http://localhost:3000/Link?invite=${InviteToken}`,
             additionalBlocks:[
-                {element:'button',
+                {
+                id: 'ButtonToCopyURL',
+                element:'button',
                  function: 'addtoclipboard',
                  HTMLvalue:'dsdsdds',
-                 value:0
+
+                 state:false,
+                 
                 }
             ]
                 
@@ -106,22 +110,23 @@ const NewPageConnect = (event)=>{
     // console.log(decoded)
     // console.log(room)
     var IsCorrectRoom = 0
+    var DoesRersoneLoggedAtRoom = 0
     for(var i = 0; i < room.length; i++){
-        console.log(event.room,room[i].room, '-- ',room.length)
+        // console.log(event.room,room[i].room, '-- ',room.length)
         if(event.room == room[i].room){
             IsCorrectRoom = 1
-            var DoesRersoneLoggedAtRoom = 0
             for(var ind = 0; ind < room[i].users.clients.length; ind++ ){
-                console.log(event.name, '!=' ,room[i].users.clients[ind].name,'длина ', room[i].users.clients.length, 'индекс', ind)
+                // console.log(event.name, '!=' ,room[i].users.clients[ind].name,'длина ', room[i].users.clients.length, 'индекс', ind)
                 if(event.name == room[i].users.clients[ind].name ){
                     DoesRersoneLoggedAtRoom = 1
                         
                         room[i].users.clients[ind].status = 'online'
+                        
                         if(event.role == 'host'){
-                            return({type:'answer', description:true, role:'host', settings:room[i].settings, users:room[i].users})
+                            return({type:'answer', description:true, room:event.room, role:'host', user: event.name, settings:room[i].settings, users:room[i].users})
                             
                         }else{
-                            return ({type:'answer', description:true, role:'client' ,users:room[i].users})
+                            return ({type:'answer', description:true, room:event.room, role:'client' ,user: event.name,users:room[i].users})
 
                         }
                     }
@@ -129,22 +134,21 @@ const NewPageConnect = (event)=>{
                     //     return({type:'error', description:'unknown name'})
                     // }
                     
-                }if(IsCorrectRoom == 1){
-                    if(DoesRersoneLoggedAtRoom == 0){
-                        return({type:'error', description:'unknown name || uncorrect token'})
-                    }
                     
-
-                }else{
-                    return({type:'error', description:'unknown room || uncorrect token'})
+                    
+                    // console.log(room[i].room,room[i].users,room[i].password)
+                    
+                    
                 }
-            
                 
-                console.log(room[i].room,room[i].users,room[i].password)
-            
+            }
+        }if(IsCorrectRoom != 1){
+            if(DoesRersoneLoggedAtRoom != 1){
 
+                return({type:'error', description:'unknown name || uncorrect token'})
             }
             
+
         }
         
            

@@ -7,8 +7,8 @@ const codeParam = (event) => {
         console.log(token);
         return token;
     } catch (error) {
-        console.error('Error during token generation:', error);
-        throw error;
+        // console.error('Error during token generation:', error);
+        return 'error'
     }
 };
 
@@ -17,8 +17,8 @@ const decode = (event) => {
         const decoded = jwt.verify(event, secretKey);
         return decoded;
     } catch (error) {
-        console.error('Error during token decoding:', error);
-        throw error;
+        // console.error('Error during token decoding:', error);
+        return 'error';
     }
 };
 

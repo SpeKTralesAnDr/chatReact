@@ -47,8 +47,10 @@ const io = new Server(server, {
         name: event.name,
         role:'client'
       }
-    info = codeParam(decodeParam)
-    
+     
+      socket.broadcast.to(event.room).emit('newUser',{user:event.name,message:{content:`${event.name} have joined to room `},time:Date.now(),})
+      info = codeParam(decodeParam)
+      
     }else{
       console.log(info)
     }
@@ -63,6 +65,25 @@ const io = new Server(server, {
     
     
   })
+  socket.on('ConnectFromInvite', (event,e)=>{
+    const decoded = decode(event)
+    console.log(decoded)
+    if(decoded !='error'){
+    decoded.name = e
+    
+    var info = ConnectToTheroom(decoded)
+    if(info.description == true){
+      socket.broadcast.to(decoded.room).emit('newUser',{user:decoded.name,message:{content:`${decoded.name} have joined to room (link)`},time:Date.now(),})
+      info = codeParam(decoded)
+      console.log()
+    }else{
+      
+    }
+    socket.emit('GetAnswerInvite', info)
+    console.log(info)
+    }
+    
+  })
   socket.on('CreateTheRoom', ( event) => {
 
     const info = CreateRoom(event.settingsGeneral, event.settingExtra)
@@ -73,22 +94,49 @@ const io = new Server(server, {
   })
   
   
+  
+  
+  
+  
+  
+  
   socket.on('NewPageConnect', (event)=>{
+    console.log(event, 'teeeest')
     const decoded = decode(event)
-    const info = NewPageConnect(decoded)
-    console.log(info)
-    console.log(info.type)
-    console.log(info.description)
-    socket.emit('NewPageConnectGetAnswer', info)
-   
-    if(info.description == true){
-      socket.join(decoded.room)
+    if(decoded != 'error'){
+      
+      const info = NewPageConnect(decoded)
+      // console.log(info)
+      // console.log(info.type)
+      // console.log(info.description)
+      
+      socket.emit('NewPageConnectGetAnswer', info)
+      if(info.description == true){
+        
+        socket.join(decoded.room)
+        socket.broadcast.to(decoded.room).emit('online','ABOBA'
+        
+        )
+        socket.on('sendmessagefromclient', (message)=>{
+          console.log(message)
+          socket.broadcast.to(decoded.room).emit('sendmessagefromclient',{id:Date.now(),content:message,time:Date.now(),name:decoded.name,avatar:{exist:false,sourse:''}}
+          
+        )
+       
+        })
+
+        
+        
+        socket.on('disconnect', () => {
+          LeaveFromRoom(decoded)
+        
+      })
+        
+      }
+    }else{
+      socket.emit('NewPageConnectGetAnswer', {type:'error', description:'Unknown JWT token'})
       
     }
-    socket.on('disconnect', () => {
-      LeaveFromRoom(decoded)
-    
-  })
 
 })
 

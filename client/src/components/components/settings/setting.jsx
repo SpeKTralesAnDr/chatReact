@@ -1,37 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import styles from './settings.module.css'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 const SettingsModule = ({SettingsOfTheRoomFunction, settingsBoxes, setSettingsForMain}) => {
 
 const handleChangeAdditionalBlock = (event)=>{
   console.log(event)
 }
 //----------------------------------------------------------------------------------------------------
-  const  handleCheckboxChange = (event,value)=> {   
-        console.log(value,'dddddddddddasdasdada')                                                                     //|
-    const updatedSettingsBoxes = settingsBoxes.map((box) => {                                     //|
-      if (box.id === event.id) {  
-          if(box.type === 'checkbox'){
+const handleCheckboxChange = (event, value) => {
+  console.log(value, 'dddddddddddasdasdada');
 
-            return { ...box, state: !box.state }; // Изменяем состояние флажка | РАЗОБРАТЬ          //|
-          }else if(box.type === 'range'){
-          
-            console.log(event)
-            return { ...box, state: value};
-          }                                                        //|
-        }                                                                                         //|
-        console.log(box)                                                                          //|
-      return box;                                                                                 //|
-    });                                                                                           //|
+  const updatedSettingsBoxes = settingsBoxes.map((box) => {
+    if (box.id === event.id) {
+      if (box.type === 'checkbox') {
+        return { ...box, state: !box.state };
+      } else if (box.type === 'range') {
+        console.log(event);
+        return { ...box, state: value };
+      }
+    }
+    
+    if (box.additionalBlocks !== undefined) {
+      const updatedAdditionalBlocks = box.additionalBlocks.map((additionalelem) => {
+        console.log(additionalelem);
+        console.log(event);
+        if (additionalelem.id === event) {
+          console.log('[ХУУУУУй');
+          if (additionalelem.id === 'ButtonToCopyURL') {
+            console.log('meeeow');
+            return { ...additionalelem, state: true };
+          }
+        }
+        return additionalelem;
+      });
 
-    console.log(updatedSettingsBoxes)                                                                                        //|
-    console.log('сработало обновление')                                                                                        //|
-    setSettingsForMain(updatedSettingsBoxes)
+      return { ...box, additionalBlocks: updatedAdditionalBlocks };
+    }
 
+    return box;
+  });
 
-
-                                     //|
-  }                                                                                               //|
+  console.log(updatedSettingsBoxes);
+  console.log('сработало обновление');
+  setSettingsForMain(updatedSettingsBoxes);
+};
 //----------------------------------------------------------------------------------------------------
   return (
     <div className={styles.SettingBLock}>
@@ -48,11 +61,39 @@ const handleChangeAdditionalBlock = (event)=>{
           <div className={styles.labelInput}>
           <label className= {styles.label}>
           <div className={styles.labeltext}>{event.label}</div>
-          {event.type === 'range' ? ( <div className={styles.valueOflimit}>{event.state}</div>): (<div></div>)}
+          
+        
           </label>
           
           <div className={styles.currentinput}>
-             {event.type === 'range' ? ( <div className={styles.count}>{event.min}</div>): (<div></div>)}
+          {event.additionalBlocks !== undefined ? (
+              <div>
+                {event.additionalBlocks.map((block) =>
+                  block.element === 'button' ? (// НУЖНО ДОБАВИТЬ УСЛОВИЕ ЕСЛИ ЭТО НЕ ИНВАЙТ КОПИ ЛИНК ТО ДРУГАЯ ШТУКОВИНА БУДЕТ
+                    <div key = {block.id} >
+                    
+                      <CopyToClipboard
+                        text={event.URL}
+                        className={block.state == true ? (styles.ButtonURLClicked): (styles.ButtonURLnotclicked) }
+                        onCopy={(blockEvent)=>{handleCheckboxChange( block.id)}}
+                        id = {block.id}
+                        >
+                          <ContentCopyIcon></ContentCopyIcon>
+                         {/* <div>  {block.id}</div> */}
+                        
+                     </CopyToClipboard>
+                
+                    </div>
+                    
+                  ) : (
+                    <div></div>
+                  )
+                )}
+              </div>
+            ) : (
+              <div></div>
+              )}
+             {event.type === 'range' ? ( <div className={styles.count}>{event.state}</div>): (<div></div>)}
             <input 
                   className={styles.inputsSettings}
                   min={event.min}
@@ -68,21 +109,7 @@ const handleChangeAdditionalBlock = (event)=>{
                   
                 </input>
               {event.type === 'range' ? ( <div className={styles.count}>{event.max}</div>): (<div></div>)}
-              {event.additionalBlocks !== undefined ? (
-              <div>
-                {event.additionalBlocks.map((block) =>
-                  block.element === 'button' ? (
-                    <button className={styles.buttonAdditional} onClick={(blockEvent)=>{handleChangeAdditionalBlock(blockEvent)}}>
-                      <ContentCopyIcon></ContentCopyIcon>
-                    </button>
-                  ) : (
-                    <div>не</div>
-                  )
-                )}
-              </div>
-            ) : (
-              <div>не хуй</div>
-              )}
+            
                 
           </div>
           </div>

@@ -1,0 +1,101 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+.message{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+}
+.Mymessage{
+
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+}
+
+.ChatMessages{
+ 
+    padding: 20px;
+   
+    background-color:rgb(66, 66, 66) ;
+}
+.HeaderOfMessage{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+.BackGroundOfMessage{
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+}
+.avatar{
+    background-color: #aaaaaa;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    overflow: hidden;
+    
+}
+.inputMessage{
+    /* margin-top: 15px; */
+    background-color: rgb(39, 39, 39);
+   padding: 10px 0px 10px 10px;
+    width: 100%;
+    border: none;
+    outline: none;
+    position: sticky;
+    bottom: 0px;
+    font-size: 13pt;
+    border-radius: 15px;
+
+
+}
+.inputMessage:active, .inputMessage:focus{
+    /* outline: 1px solid #cc3444 */
+}
+.InsteadOfAvatar{
+    background-color: #cc3444;
+    color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 16pt;
+    font-weight: 700;
+}
+.avatarImage{
+    width: 100%;
+    height: 100%;
+    
+}
+.time{
+    margin-left: 10px;
+    font-size: 9pt;
+    color: #aaaaaa;
+}
+.name{
+    padding:0px 0px 0px 5px  ;
+    font-weight: 600;
+    font-size: 1rem;
+}
+.Myname{
+    padding:0px 0px 0px 5px  ;
+    font-weight: 600;
+    font-size: 1rem;
+    color:#cc3444
+}
+.messageContent{
+    background-color: rgba(43, 43, 43, 0);
+    padding:2px  5px;
+    border-radius: 15px;
+    display: flex;
+    font-size: 10pt;
+    flex-direction: column;
+    justify-content: center;
+    
+
+}

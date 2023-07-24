@@ -7,12 +7,6 @@
     --additionalColor: #cc3444
 
 }
-.rede{
-    text-align: center;
-    margin-top: 10px;
-    color: gray;  
-    
-}
 .boxJoin{
     padding: 0px 15px 20px 15px;
     height: 350px;
@@ -25,8 +19,8 @@
     border: 1px solid gray;
 }
 .box{
-    padding: 0px 15px 0px 15px;
-    height: 370px; 
+    padding: 0px 15px 20px 15px;
+    height: 350px; 
      width: 273px;
     display: flex;
     flex-direction: column;
