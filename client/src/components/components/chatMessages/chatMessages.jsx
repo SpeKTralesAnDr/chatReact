@@ -22,32 +22,38 @@ const ChatMessages = ({ messages,SendMessage, name,  }) => {
     }
   return (
     <div className={styles.ChatMessages}>
-      {messages.map((event) => (
-        <div className={event.name != name ?(styles.message):(styles.Mymessage)} key={event.id}> 
-          <div className={styles.avatar}>
-              {event.avatar.exist === true ? (<div>
-                <img src={event.avatar.sourse} alt="is not avaiable" className={styles.avatarImage} />
-              </div>):(<div className={styles.InsteadOfAvatar}>
-                {event.name[0]}
-              </div>)}
-            
-          </div>
-          <div className={styles.BackGroundOfMessage}>
-            <div className={styles.HeaderOfMessage}>
-              <div className={event.name != name ?(styles.name):(styles.Myname)}>{event.name}</div>
-              <div className={styles.time}>{event.time}</div>
-
-            </div>
-            <div className={styles.messageContent}>
-              {/* Используйте return для возврата элементов JSX внутри .map() */}
-              {event.content.map((message, index) => (
+      <div className={styles.ChatContent}> 
+        {
+        messages.map((event) => (
+          <div className={event.name != name ?(styles.message):(styles.Mymessage)} key={event.id}> 
+            <div className={styles.avatar}>
+                {event.avatar.exist === true ? (<div>
+                  <img src={event.avatar.sourse} alt="is not avaiable" className={styles.avatarImage} />
+                </div>):(<div className={styles.InsteadOfAvatar}>
+                  {event.name[0]}
+                </div>)}
               
-                <div key = {index}>{message}</div>  // ВАЖНО ИНДЕКС В КЛЮЧЕ НУЖНО БУДЕТ УБРАТЬ
-              ))}
+            </div>
+            <div className={styles.BackGroundOfMessage}>
+              <div className={styles.HeaderOfMessage}>
+                <div className={event.name != name ?(styles.name):(styles.Myname)}>{event.name}</div>
+                <div className={styles.time}>{event.time}</div>
+
+              </div>
+              <div className={styles.messageContent}>
+                {/* Используйте return для возврата элементов JSX внутри .map() */}
+                {event.content.map((message, index) => (
+                
+                  <div key = {index}>{message}</div>  // ВАЖНО ИНДЕКС В КЛЮЧЕ НУЖНО БУДЕТ УБРАТЬ
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+        }
+
+      </div>
+        
       <button className={styles.button} onClick={send}>
         <SendIcon ></SendIcon>
       </button>

@@ -44,7 +44,7 @@ const [switchers, setSwitchers] = useState([
     {id:'Members', value:'Members', State:false, },
     {id:'Settings', value:'Settings', State:false, }
 ])
-const [rightpanelwindow, setRightpanelwindow ] = useState('Chat')
+const [Rightpanelwindow, setRightpanelwindow ] = useState('Chat')
 useEffect(()=>{
     console.log(switchers)
 },[switchers])
@@ -109,7 +109,7 @@ const handleMessageFromClient = (e) => {
   }
 };
 
-;//ПРОСТО БРЕД ПОЧЕМУ ЕСЛИ НЕ ОТПИСАТЬСЯ НАДО БУДЕТ ПОСМОТРЕТЬ----------------------------------------
+;//---------------------------------------
 
 
 
@@ -179,6 +179,7 @@ useEffect(() => {
              <div className={styles.wChat}> 
             <div className={styles.video}>
                 <div>
+                
 
                 </div>
                 <div className={styles.SettingsOfCall}></div>
@@ -186,7 +187,25 @@ useEffect(() => {
            {/* { data.role == 'host' ? (<SettingsModule className={styles.settings}settingsBoxes={data.settings} setSettingsForMain={newSettings => setData({ ...data, settings: newSettings })}  > </SettingsModule>):<div></div> } */}
           <div className={styles.rightPanel}>
            <Panelchangewindow data = {data.role} Chagewindow={setRightpanelwindow} set></Panelchangewindow>
-          <div  className= {styles.Chat}><ChatMessages messages = {messages}  SendMessage= {SendMessage}  name = {data.user}></ChatMessages></div>
+           {Rightpanelwindow === 'Settings' ? (
+            
+            <div className={styles.settings}>
+              <SettingsModule
+                className={styles.settings}
+                settingsBoxes={data.settings}
+                setSettingsForMain={newSettings => setData({ ...data, settings: newSettings })}
+            >
+            </SettingsModule>
+            </div>
+        ) : Rightpanelwindow === 'Chat' ? (
+            <div  className= {styles.Chat}>
+              <ChatMessages messages = {messages}  SendMessage= {SendMessage}  name = {data.user}></ChatMessages>
+              </div>
+        ) : (
+  <div></div>
+)}
+
+            
           </div>
           {/* СНИЗУ КОД НУЖНО РАЗОБРАТЬ  */}
           {/* <button onClick={showNotification}>Показать уведомление</button> */}

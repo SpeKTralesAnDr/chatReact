@@ -2,7 +2,7 @@ const room = [{room:'EXAMPLE',users:{host:'EXAMPLE', clients:[{name:"EXAMPLE", s
 const jwt = require('jsonwebtoken');
 const secretKey = 'H2fJt9Oq7Z';
 const {codeParam, decode} = require("../jwt/jwtModule")
-// console.log(, 'тест хуй залупка')
+// console.log(, 'тест  залупка')
 const CreateRoom = (general, extra)=>{
     // console.log(general,extra)
     var isrepeat = 0
@@ -26,7 +26,7 @@ const CreateRoom = (general, extra)=>{
           state: 5,
             min:5,
             max:60,
-            URL: `http://localhost:3000/Link?invite=${InviteToken}`,
+            URL: `http://26.83.203.240:3000/Link?invite=${InviteToken}`,
             additionalBlocks:[
                 {
                 id: 'ButtonToCopyURL',

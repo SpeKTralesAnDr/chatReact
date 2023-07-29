@@ -24,3 +24,10 @@
     display: flex;
     width: 700px;
 }
+.settings{
+    border: 1px solid gray;
+    padding: 1px;
+    height: auto;
+    border-radius: 30px;
+    overflow: hidden;
+}

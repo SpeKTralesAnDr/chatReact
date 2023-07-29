@@ -86,7 +86,7 @@ const Main = ({socket}) => {
           
           <div className={styles.modals} >
             <FormCreate Changemodal = {setCurrentModal} sendToServer = {SendToServerFromFormCreate} settings = {settingsToModule} getwarn = {warn} ></FormCreate>
-            <SettingsModule  settingsBoxes={settingsToModule} setSettingsForMain = {setSettingsBoxes}></SettingsModule>
+            <div className={styles.settings}> <SettingsModule  settingsBoxes={settingsToModule} setSettingsForMain = {setSettingsBoxes}></SettingsModule></div>
             
           </div>
         )}
