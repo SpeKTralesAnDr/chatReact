@@ -4,8 +4,9 @@ const { Server } = require ('socket.io')
 const cors = require('cors')
 const app = express();
 const route = require("./route");
-const {CreateRoom, LeaveFromRoom,NewPageConnect,ConnectToTheroom} = require("./Room/rooms")
-const {codeParam, decode} = require("./jwt/jwtModule")
+const {CreateRoom, LeaveFromRoom,getUsersOfRoom,ConnectToTheroom, getRoomData,setStatus} = require("./Room/rooms")
+const {codeParam, decode} = require("./jwt/jwtModule");
+const e = require('express');
 // const LeaveFromRoom = require("./room/rooms.js")
 
 var countOfConnects = 0
@@ -28,33 +29,67 @@ const io = new Server(server, {
 
 
   io.on('connection', (socket) => {
-  var CurrentData = undefined
+  var CurrentDataAboutUser = undefined
+  const clientIpAddress = socket.handshake.address;
+ 
   // var info = undefined
   countOfConnects++
-  console.log('пользователь подключился, текущее кол-во пользователей ', countOfConnects)
+  console.log('пользователь подключился, текущее кол-во пользователей:',countOfConnects,  {clientIpAddress})
   
+
+
+  
+  socket.on('CreateTheRoom', ( event) => {
+
+    info = CreateRoom(event.settingsGeneral, event.settingExtra,socket.id )
+    if(info.type == 'answer'){
+      CurrentDataAboutUser = info.data
+      //   ДАТА ЗДЕСЬ С НАСТРОЙКАМИ
+      socket.join(CurrentDataAboutUser.room)
+      
+      socket.emit('DataAboutCreatingRoom', codeParam({room:CurrentDataAboutUser.room, name: CurrentDataAboutUser.name,password:event.settingsGeneral.password, role:'host'} ))
+    }else{
+      socket.emit('DataAboutCreatingRoom','error')
+    }
+    
+    
+  })
+
+
 
 
 
 
   socket.on('JoinToTheRoom', (event)=>{
-   
+    event.socketID = socket.id
     var info = ConnectToTheroom(event)
+    console.log(info)
     if(info.description == true){
+      CurrentDataAboutUser = {...event, role:'client' }
       console.log(event)
-     var decodeParam = {
-        room:event.room,
-        name: event.name,
-        role:'client'
-      }
-     
-      socket.broadcast.to(event.room).emit('newUser',{user:event.name,message:{content:`${event.name} have joined to room `},time:Date.now(),})
-      info = codeParam(decodeParam)
+    //  var decodeParam = {
+    //     room:event.room,
+    //     name: event.name,
+    //     role:'client'
+    //   }
+      socket.join(event.room)
+      console.log('count of users at room',io.sockets.adapter.rooms.get(event.room).size)
+      socket.broadcast.to(event.room).emit('newUser',{user:{name:event.name, status:'online',
+        avatar:{
+          exist:false,
+          sourse:'' },},
+        message:{content:`${event.name} have joined to room `},
+        time:Date.now(),})
+      const content = codeParam(CurrentDataAboutUser)
+      // delete content.iat, content.password // по идее можно удалить
+      info = ({type:'answer', description:true, content:content})
       
     }else{
-      console.log(info)
+
     }
+
     
+   
     socket.emit('DataAboutJoin', info)
     
     
@@ -67,7 +102,7 @@ const io = new Server(server, {
   })
   socket.on('ConnectFromInvite', (event,e)=>{
     const decoded = decode(event)
-    console.log(decoded)
+    
     if(decoded !='error'){
     decoded.name = e
     
@@ -75,84 +110,122 @@ const io = new Server(server, {
     if(info.description == true){
       socket.broadcast.to(decoded.room).emit('newUser',{user:decoded.name,message:{content:`${decoded.name} have joined to room (link)`},time:Date.now(),})
       info = codeParam(decoded)
-      console.log()
+      
+     
     }else{
       
     }
     socket.emit('GetAnswerInvite', info)
-    console.log(info)
+    // console.log(info)
     }
     
   })
-  socket.on('CreateTheRoom', ( event) => {
-
-    const info = CreateRoom(event.settingsGeneral, event.settingExtra)
-  
-    socket.emit('DataAboutCreatingRoom', info)
-    
-    
-  })
-  
-  
-  
-  
-  
-  
-  
-  
-  socket.on('NewPageConnect', (event)=>{
-    console.log(event, 'teeeest')
-    const decoded = decode(event)
-    if(decoded != 'error'){
+  socket.on('NewPageConnect', (event) => {
+    console.log('data is sended')
+    if(CurrentDataAboutUser != undefined){
       
-      const info = NewPageConnect(decoded)
-      // console.log(info)
-      // console.log(info.type)
-      // console.log(info.description)
-      
-      socket.emit('NewPageConnectGetAnswer', info)
-      if(info.description == true){
+      // if(CurrentDataAboutUser.role == 'host'){
         
-        socket.join(decoded.room)
-        socket.broadcast.to(decoded.room).emit('online','ABOBA'
+        // }else{
         
-        )
-        socket.on('sendmessagefromclient', (message)=>{
-          console.log(message)
-          socket.broadcast.to(decoded.room).emit('sendmessagefromclient',{id:Date.now(),content:message,time:Date.now(),name:decoded.name,avatar:{exist:false,sourse:''}}
+         
+         users = getUsersOfRoom(CurrentDataAboutUser)
+         
+        
           
-        )
-       
-        })
+          socket.emit('DataAboutUser', {...CurrentDataAboutUser, users}  )
+          
+        }else if(event != undefined){
+          CurrentDataAboutUser = decode(event)
+          // delete CurrentDataAboutUser.password    // НЕИЗВЕСТНО ЧТО БУДЕТ СО СКОРОСТЬЮ И ОПТИМИЗАЦИЕЙ!!!!!!!!
+          delete CurrentDataAboutUser.iat       // НЕИЗВЕСТНО ЧТО БУДЕТ СО СКОРОСТЬЮ И ОПТИМИЗАЦИЕЙ!!!!!!!!
+          console.log('without password',CurrentDataAboutUser)
+          
+          if(CurrentDataAboutUser != 'error'){
+             //я остановился здесь 
+            
+            const settingsOfTheRoom = getRoomData(CurrentDataAboutUser)
+            
+            console.log(settingsOfTheRoom)
+            if(settingsOfTheRoom.description == true){
+              socket.join(settingsOfTheRoom.content.room)
+              socket.broadcast.to(CurrentDataAboutUser.room).emit('userIsOFFON',CurrentDataAboutUser)
+              
+              // SetStatusOnline(CurrentDataAboutUser)
+              socket.emit('DataAboutUser',settingsOfTheRoom.content)
+            }else{
+              socket.emit('DataAboutUser',settingsOfTheRoom)
+              
+            }
+            
+            
+          // if(decodedToken){}
 
-        
-        
-        socket.on('disconnect', () => {
-          LeaveFromRoom(decoded)
-        
-      })
-        
+      }else{
+
       }
     }else{
-      socket.emit('NewPageConnectGetAnswer', {type:'error', description:'Unknown JWT token'})
-      
+      const infoToNewPage = {type:'error', description:'Unknown JWT token'}
+
     }
-
-})
-
+  })
 
 
 
 
+  socket.on('sendmessagefromclient', (event) => {
+    console.log('message is sended')
+    if(CurrentDataAboutUser != undefined){
+      if(CurrentDataAboutUser.role == 'host'){
+        
+      }else{
+
+      }
+      socket.broadcast.to(CurrentDataAboutUser.room).emit('sendmessagefromclient',{
+        id:Date.now(),
+        
+        time: Date.now(),
+        name:CurrentDataAboutUser.name,
+        content:[
+          event]
+        })
+    }else{
+      const infoToNewPage = {type:'error', description:'Unknown JWT token'}
+    }
+  })
+  
+
+  
+  
+  
+  
+  
+  
+  
 
 
+
+
+
+
+
+
+socket.on('testgetmes',(event)=>{
+  console.log('тест')
+  
+} )
 
 
  
 
   socket.on('disconnect', () => {
 
-    // console.log(CurrentData)
+    // console.log(decode('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb29tIjoiMjIyIiwicGFzc3dvcmQiOiIxMTEiLCJuYW1lIjoiMDAwIiwicm9sZSI6ImNsaWVudCIsImlhdCI6MTY5MjQ2MjcyMX0.T6SoeMgqHSPahY5sEfhU5kAuc4_p05p_LMkkrshmui8'))
+   if(CurrentDataAboutUser !== undefined){
+      const aboutUser = setStatus(CurrentDataAboutUser)
+      console.log(aboutUser)
+      socket.broadcast.to(CurrentDataAboutUser.room).emit('userIsOFFON',aboutUser)
+   }
     countOfConnects-- 
     console.log('пользователь отключился, текущее кол-во пользователей ', countOfConnects)
   })

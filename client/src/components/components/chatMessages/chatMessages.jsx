@@ -6,7 +6,7 @@ const ChatMessages = ({ messages,SendMessage, name,  }) => {
   const [valueOfInput, setValueOfInput] = useState('')
  
   const checkkey = (event)=>{
-    if(event.keyCode == 13){
+    if(event.keyCode == 13 && valueOfInput.length > 0){
       console.log('send', valueOfInput)
       SendMessage(valueOfInput)
       setValueOfInput('')
@@ -16,8 +16,12 @@ const ChatMessages = ({ messages,SendMessage, name,  }) => {
   const send = (event)=>{
     
      
+     if(valueOfInput.length > 0){
       SendMessage(valueOfInput)
+      console.log(valueOfInput);
       setValueOfInput('')
+      
+     }
 
     }
   return (

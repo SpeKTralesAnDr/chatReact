@@ -26,7 +26,7 @@ const handleCheckboxChange = (event, value) => {
         console.log(additionalelem);
         console.log(event);
         if (additionalelem.id === event) {
-          console.log('[ХУУУУУй');
+      
           if (additionalelem.id === 'ButtonToCopyURL') {
             console.log('meeeow');
             return { ...additionalelem, state: true };
@@ -109,13 +109,13 @@ const handleCheckboxChange = (event, value) => {
                   
                 </input>
               {event.type === 'range' ? ( <div className={styles.count}>{event.max}</div>): (<div></div>)}
-            
                 
           </div>
           </div>
           <div className={styles.description}>
               {event.description }
           </div>
+              {/* <hr className={styles.hr}></hr> */}
               
          
         </div>

@@ -1,9 +1,10 @@
 const room = [{room:'EXAMPLE',users:{host:'EXAMPLE', clients:[{name:"EXAMPLE", status:'offline'}]},password:'EXAMPLE', settings:'EXAMPLE'}]
 const jwt = require('jsonwebtoken');
 const secretKey = 'H2fJt9Oq7Z';
-const {codeParam, decode} = require("../jwt/jwtModule")
-// console.log(, 'тест  залупка')
-const CreateRoom = (general, extra)=>{
+const {codeParam, decode} = require("../jwt/jwtModule");
+const { Socket } = require('socket.io');
+
+const CreateRoom = (general, extra, socketID)=>{
     // console.log(general,extra)
     var isrepeat = 0
     for(var i = 0; i < room.length ; i++){
@@ -41,32 +42,52 @@ const CreateRoom = (general, extra)=>{
                 
             
         });
-        console.log(extra);
+        
       
         room.push({
           room: general.room,
           users: {
             host: general.name,
-            clients: [{ name: general.name, status: 'offline' }]
+            clients: [{ name: general.name, status: 'online',SocketID:socketID,
+            avatar:{
+                exist:false,
+                sourse:''
+              },
+            }]
           },
           password: general.password,
           settings: extra
         });
       
-        const payload = {
-          room: general.room,
-          name: general.name,
-          role: 'host'
-        };
+        // const payload = {
+        //   room: general.room,
+        //   name: general.name,
+        //   role: 'host'
+        // };
       
-        const tokenLogin = jwt.sign(payload, secretKey);
-        console.log(tokenLogin);
-        return tokenLogin;
+       
+        return {type:'answer',
+                description:true,
+                data:{
+                    room: general.room,
+                    name: general.name,
+                    settings:extra,
+                    role: 'host'
+                }}
     }else{console.log('РУМЫ ПОВТОРЯЮТСЯ', isrepeat)
     return('error')
 }
 
 
+}
+const getUsersOfRoom = (event)=>{
+    for(let i = 0; i < room.length; i++){
+        if(room[i].room == event.room){
+            console.log(room[i].users);
+            const users = room[i].users
+            return (users)
+        }
+    }
 }
 const ConnectToTheroom = (event)=>{
     console.log(event)
@@ -81,8 +102,11 @@ const ConnectToTheroom = (event)=>{
                     if(room[i].settings[ind].state == true){
                         if( room[i].password == event.password){
                             console.log('password is enabled and right')
-                            room[i].users.clients.push({name:event.name, status:'offline'})
-                            console.log(room[i].users.clients)
+                            room[i].users.clients.push({name:event.name, status:'online', SocketID:event.socketID, avatar:{
+                                exist:false,
+                                sourse:''
+                              },})
+                           
                             return ({type:'answer', description:true})
 
                         }else{
@@ -104,60 +128,115 @@ const ConnectToTheroom = (event)=>{
     }
 
 }
-const NewPageConnect = (event)=>{
-    // console.log(event)
-    // const decoded = jwt.verify(token, secretKey);
-    // console.log(decoded)
-    // console.log(room)
-    var IsCorrectRoom = 0
-    var DoesRersoneLoggedAtRoom = 0
-    for(var i = 0; i < room.length; i++){
-        // console.log(event.room,room[i].room, '-- ',room.length)
-        if(event.room == room[i].room){
-            IsCorrectRoom = 1
-            for(var ind = 0; ind < room[i].users.clients.length; ind++ ){
-                // console.log(event.name, '!=' ,room[i].users.clients[ind].name,'длина ', room[i].users.clients.length, 'индекс', ind)
-                if(event.name == room[i].users.clients[ind].name ){
-                    DoesRersoneLoggedAtRoom = 1
-                        
-                        room[i].users.clients[ind].status = 'online'
-                        
-                        if(event.role == 'host'){
-                            return({type:'answer', description:true, room:event.room, role:'host', user: event.name, settings:room[i].settings, users:room[i].users})
-                            
-                        }else{
-                            return ({type:'answer', description:true, room:event.room, role:'client' ,user: event.name,users:room[i].users})
 
-                        }
+const getRoomData =(event)=>{
+    let doesroomexist = false
+    let IsPasswordPassed = false;
+    // console.log(event)
+    for( let i = 0; i< room.length; i++){
+        if(room[i].room == event.room){
+            doesroomexist = 1
+            // console.log('333')
+            for(let ind = 0; ind < room[i].settings.length ;ind++){
+                if(room[i].settings[ind].id == 'Password'){
+                    console.log(room[i].settings[ind].id)
+                    if(room[i].settings[ind].state == true){
+                        // console.log('chaaaacha')
+                        // console.log(room[i].password, event.password)
+                        if(room[i].password == event.password){
+                            IsPasswordPassed = true
+                        }else {IsPasswordPassed =false}
+                    }else{
+                        // console.log('chaaaacha')
+                        IsPasswordPassed = true
                     }
-                    // else{
-                    //     return({type:'error', description:'unknown name'})
-                    // }
-                    
-                    
-                    
-                    // console.log(room[i].room,room[i].users,room[i].password)
-                    
                     
                 }
+            }if(IsPasswordPassed == true){
+                let IsNameFound = 0
+                for(var index = 0; index < room[i].users.clients.length; index++){
+                   
+                    if(event.name == room[i].users.clients[index].name){
+                        room[i].users.clients[index].status = 'online'
+                        // console.log(room[i].users)
+                        IsNameFound = 1
+                        return({type:'answer', description:true, content:event.role === 'host' ?({...room[i], name:event.name,role:event.role}):({
+                            room:room[i].room,
+                            users:room[i].users,
+                            name:event.name,
+                            role:event.role
+                        }) })
+
+                    }else{
+                        
+                        
+                    }
+                }
+            if(IsNameFound == 0){
+                return ({type:'error', description:"Error:unknown name. Try connecting again. If it doesn't help, clear your browser cache."})
+            }
+                
                 
             }
-        }if(IsCorrectRoom != 1){
-            if(DoesRersoneLoggedAtRoom != 1){
-
-                return({type:'error', description:'unknown name || uncorrect token'})
+            // return room[i].settings
+            // if(doesroomexist == true ){
+            // }else{
+            //     return ({type:'error', description:false})
+            // }if(IsPasswordPassed == true){
+                
+            // }else{
+                // }
             }
-            
-
+       
         }
-        
-           
-        
-      
+        if(IsPasswordPassed == false || doesroomexist == false){
+            return ({type:'error', description:"Error:unknown room. Try connecting again. If it doesn't help, clear your browser cache."})
+
+    }
 }
+// const SetStatusOnline = (e) =>{
+//     console.log('fun set online',e)
+//     for(var i = 0; i < room.length; i++ ){
+//         if(room[i] == e.room){
+//             for(var index = 0; i< room[i].users.clients.length; index++){
+//                 if(e.name == room[i].users.clients[index]){
+//                     room[i].users.clients[index].status = 'online'
+//                 }
+//             }
+//         }
+//     }
+// }
+const setStatus = (e)=>{
+    
+
+        console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
+        for(var i = 0; i < room.length; i++){
+            
+            console.log(room[i].room, '==' ,e.room)
+            if(room[i].room == e.room){
+                console.log(room[i].users.clients)
+                for(var index = 0; index < room[i].users.clients.length; index++){
+                   
+                    
+                    if(room[i].users.clients[index].name == e.name){
+                        if(room[i].users.clients[index].status == 'offline'){
+                            room[i].users.clients[index].status = 'online'
+
+                        }else{
+                            room[i].users.clients[index].status = 'offline'
+                            room[i].users.clients[index].SocketID = undefined
+                        }
+                       
+                        return(room[i].users.clients[index])
+                    }
+                }
+            }
+        }
+    
+    }
 const LeaveFromRoom = (token) =>{
     
     
     }
  
-    module.exports = {CreateRoom, LeaveFromRoom,NewPageConnect,ConnectToTheroom}
+    module.exports = {CreateRoom, LeaveFromRoom,ConnectToTheroom, getRoomData,getUsersOfRoom,setStatus}

@@ -27,6 +27,11 @@
 .background{
     height: 100%;
 }
+.MemberList{
+    background-color: rgb(18,18,18);
+    width: 100%;
+    height:calc(100% - 45px)
+}
 .header{
     background-color: rgb(53, 53, 53);
     width: 100%;
@@ -35,7 +40,7 @@
 
 .video{
     height: 100%;
-    background-color: rgb(71, 71, 71);
+    background-color:rgb(12,12,12);
    
 }
 

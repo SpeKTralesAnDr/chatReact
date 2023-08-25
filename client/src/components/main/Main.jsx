@@ -55,7 +55,7 @@ const Main = ({socket}) => {
       if(data.type == 'error'){
           SetWarn(data.description)
         }else{
-          localStorage.setItem('token', data);
+          localStorage.setItem('token', data.content);
           navigate(`/Chat`);
 
       }

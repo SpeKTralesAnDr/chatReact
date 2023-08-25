@@ -7,7 +7,7 @@ const codeParam = (event) => {
         console.log(token);
         return token;
     } catch (error) {
-        // console.error('Error during token generation:', error);
+        console.error('Error during token generation:', `from ${event}`);
         return 'error'
     }
 };
