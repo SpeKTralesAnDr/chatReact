@@ -6,6 +6,7 @@ import styles from './chat.module.css'
 import Panelchangewindow from '../panelchangewindow/panelchangewindow';
 import io from 'socket.io-client';
 import MemberList from '../components/Members/memberList';
+import RtcRouter from '../components/RTCMODULE/RtcRouter';
 
 
 const Chat = ({socket}) => {
@@ -251,7 +252,9 @@ useEffect(() => {
              <div className={styles.wChat}> 
             <div className={styles.video}>
                 <div>
-                
+                  <RtcRouter data = {data} socket = {socket}>
+
+                  </RtcRouter>
 
                 </div>
                 <div className={styles.SettingsOfCall}></div>

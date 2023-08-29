@@ -83,14 +83,14 @@ const CreateRoom = (general, extra, socketID)=>{
 const getUsersOfRoom = (event)=>{
     for(let i = 0; i < room.length; i++){
         if(room[i].room == event.room){
-            console.log(room[i].users);
+            console.log('connect/create',room[i].users.clients)
             const users = room[i].users
             return (users)
         }
     }
 }
 const ConnectToTheroom = (event)=>{
-    console.log(event)
+    
     var doesroomexist = 0
     for(var i = 0; i < room.length; i++){
         if(room[i].room == event.room ){
@@ -139,7 +139,7 @@ const getRoomData =(event)=>{
             // console.log('333')
             for(let ind = 0; ind < room[i].settings.length ;ind++){
                 if(room[i].settings[ind].id == 'Password'){
-                    console.log(room[i].settings[ind].id)
+                    // console.log(room[i].settings[ind].id)
                     if(room[i].settings[ind].state == true){
                         // console.log('chaaaacha')
                         // console.log(room[i].password, event.password)
@@ -155,9 +155,11 @@ const getRoomData =(event)=>{
             }if(IsPasswordPassed == true){
                 let IsNameFound = 0
                 for(var index = 0; index < room[i].users.clients.length; index++){
-                   
+                    
                     if(event.name == room[i].users.clients[index].name){
                         room[i].users.clients[index].status = 'online'
+                        room[i].users.clients[index].SocketID = event.socketID
+                        console.log(event.SocketID,'newpage',room[i].users.clients)
                         // console.log(room[i].users)
                         IsNameFound = 1
                         return({type:'answer', description:true, content:event.role === 'host' ?({...room[i], name:event.name,role:event.role}):({
@@ -194,6 +196,46 @@ const getRoomData =(event)=>{
 
     }
 }
+
+
+
+
+
+
+
+
+const GetUserSocketID = (name,roomofuser)=>{
+    let SocketID 
+    room.forEach((el,i,self)=>{
+        console.log(el.room,roomofuser)
+        if(el.room == roomofuser){
+            el.users.clients.forEach((user)=>{
+                console.log(user.name, name)
+                if(user.name == name){
+                    SocketID = user.SocketID
+                }
+            })
+        }
+    })
+
+    return (SocketID)
+}
+const GetUserArraySocketID = (name,roomofuser)=>{
+    let SocketID = []
+    room.forEach((el,i,self)=>{
+        console.log(el.room,roomofuser)
+        if(el.room == roomofuser){
+            el.users.clients.forEach((user)=>{
+                console.log(user.name, name)
+                if(user.name == name){
+                    SocketID.push({name:user.name, SocketID:user.SocketID})
+                }
+            })
+        }
+    })
+
+    return (SocketID)
+}
 // const SetStatusOnline = (e) =>{
 //     console.log('fun set online',e)
 //     for(var i = 0; i < room.length; i++ ){
@@ -209,12 +251,12 @@ const getRoomData =(event)=>{
 const setStatus = (e)=>{
     
 
-        console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
+        // console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
         for(var i = 0; i < room.length; i++){
             
-            console.log(room[i].room, '==' ,e.room)
+            // console.log(room[i].room, '==' ,e.room)
             if(room[i].room == e.room){
-                console.log(room[i].users.clients)
+                console.log('disconnect',room[i].users.clients)
                 for(var index = 0; index < room[i].users.clients.length; index++){
                    
                     
@@ -239,4 +281,4 @@ const LeaveFromRoom = (token) =>{
     
     }
  
-    module.exports = {CreateRoom, LeaveFromRoom,ConnectToTheroom, getRoomData,getUsersOfRoom,setStatus}
+    module.exports = {CreateRoom, LeaveFromRoom,ConnectToTheroom, getRoomData,getUsersOfRoom,setStatus,GetUserSocketID,GetUserArraySocketID}

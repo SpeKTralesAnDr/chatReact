@@ -4,9 +4,11 @@ const { Server } = require ('socket.io')
 const cors = require('cors')
 const app = express();
 const route = require("./route");
-const {CreateRoom, LeaveFromRoom,getUsersOfRoom,ConnectToTheroom, getRoomData,setStatus} = require("./Room/rooms")
+const {CreateRoom, LeaveFromRoom,getUsersOfRoom,ConnectToTheroom, getRoomData,setStatus,GetUserSocketID,GetUserArraySocketID} = require("./Room/rooms")
 const {codeParam, decode} = require("./jwt/jwtModule");
 const e = require('express');
+const { off } = require('process');
+const { Socket } = require('dgram');
 // const LeaveFromRoom = require("./room/rooms.js")
 
 var countOfConnects = 0
@@ -63,10 +65,10 @@ const io = new Server(server, {
   socket.on('JoinToTheRoom', (event)=>{
     event.socketID = socket.id
     var info = ConnectToTheroom(event)
-    console.log(info)
+    // console.log(info)
     if(info.description == true){
       CurrentDataAboutUser = {...event, role:'client' }
-      console.log(event)
+      // console.log(event)
     //  var decodeParam = {
     //     room:event.room,
     //     name: event.name,
@@ -100,6 +102,7 @@ const io = new Server(server, {
     
     
   })
+  
   socket.on('ConnectFromInvite', (event,e)=>{
     const decoded = decode(event)
     
@@ -139,14 +142,15 @@ const io = new Server(server, {
           CurrentDataAboutUser = decode(event)
           // delete CurrentDataAboutUser.password    // НЕИЗВЕСТНО ЧТО БУДЕТ СО СКОРОСТЬЮ И ОПТИМИЗАЦИЕЙ!!!!!!!!
           delete CurrentDataAboutUser.iat       // НЕИЗВЕСТНО ЧТО БУДЕТ СО СКОРОСТЬЮ И ОПТИМИЗАЦИЕЙ!!!!!!!!
-          console.log('without password',CurrentDataAboutUser)
+          CurrentDataAboutUser.socketID = socket.id
+          // console.log('without password',CurrentDataAboutUser)
           
           if(CurrentDataAboutUser != 'error'){
              //я остановился здесь 
             
             const settingsOfTheRoom = getRoomData(CurrentDataAboutUser)
             
-            console.log(settingsOfTheRoom)
+            // console.log(settingsOfTheRoom)
             if(settingsOfTheRoom.description == true){
               socket.join(settingsOfTheRoom.content.room)
               socket.broadcast.to(CurrentDataAboutUser.room).emit('userIsOFFON',CurrentDataAboutUser)
@@ -195,10 +199,30 @@ const io = new Server(server, {
   })
   
 
+  socket.on('SendOfferToEveryoneOfTheRoom',(event)=>{
+
+    const socketID = GetUserSocketID(event.name, CurrentDataAboutUser.room)
+    if (socketID !== undefined){
+      console.log('send to ', socketID) 
+      io.to(socketID).emit('PersonalOfferSDP',{sdp:event.offer, name:CurrentDataAboutUser.name}) 
+    }
+  } )
   
+  socket.on('SendAnswerSDP', (event)=>{
+    const socketID = GetUserSocketID(event.name, CurrentDataAboutUser.room)
+    if (socketID !== undefined){
+      console.log('send to ', socketID) 
+      io.to(socketID).emit('PersonalAnswerOnSDP',event.sdp) 
+    }
+  })
   
-  
-  
+  socket.on('SendICE',(ice) => {
+    const socketID = GetUserSocketID(ice.name, CurrentDataAboutUser.room)
+    if (socketID !== undefined){
+      console.log('send to ', socketID) 
+      io.to(socketID).emit('GetICE',ice.ice) 
+    }
+  })
   
   
   
@@ -214,6 +238,13 @@ socket.on('testgetmes',(event)=>{
   console.log('тест')
   
 } )
+socket.on('pm', (e)=>{
+  console.log(e)
+  console.log('свое', socket.id)
+  const message = 'Привет, это личное сообщение!';
+  
+  io.to(socket.id).emit('pm',message)
+})
 
 
  
@@ -223,7 +254,7 @@ socket.on('testgetmes',(event)=>{
     // console.log(decode('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb29tIjoiMjIyIiwicGFzc3dvcmQiOiIxMTEiLCJuYW1lIjoiMDAwIiwicm9sZSI6ImNsaWVudCIsImlhdCI6MTY5MjQ2MjcyMX0.T6SoeMgqHSPahY5sEfhU5kAuc4_p05p_LMkkrshmui8'))
    if(CurrentDataAboutUser !== undefined){
       const aboutUser = setStatus(CurrentDataAboutUser)
-      console.log(aboutUser)
+      // console.log(aboutUser)
       socket.broadcast.to(CurrentDataAboutUser.room).emit('userIsOFFON',aboutUser)
    }
     countOfConnects-- 
